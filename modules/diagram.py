@@ -7,7 +7,8 @@ from modules.beachline import Beachline
 from modules.face import Face
 from modules.halfedge import HalfEdge
 from modules.vector2d import Vector2d
-from modules.box import Box, Intersection
+from modules.box import Box
+from modules.intersection import Intersection
 from modules.site import Site
 from modules.vertex import Vertex
 import numpy as np
@@ -64,7 +65,7 @@ class Diagram:
                              right.site.point).orthogonal
                 origin = (left.site.point +
                           right.site.point).mulByScalar(0.5)
-                intersection: Intersection = box.getFirstIntersection(
+                intersection: Intersection = box.getIntersection(
                     origin, direction)
                 vertex = self.createVertex(intersection.point, add=False)
 
@@ -108,13 +109,13 @@ class Diagram:
                             (origin.asTuple(), destination.asTuple()))
                     elif originInside and not destinationInside:
                         direction = destination - origin
-                        intersection = box.getFirstIntersection(
+                        intersection = box.getIntersection(
                             origin, direction)
                         visualizer.add_line_segment(
                             (origin.asTuple(), intersection.point.asTuple()))
                     elif not originInside and destinationInside:
                         direction = origin - destination
-                        intersection = box.getFirstIntersection(
+                        intersection = box.getIntersection(
                             destination, direction)
                         visualizer.add_line_segment(
                             (destination.asTuple(), intersection.point.asTuple()))
@@ -166,11 +167,6 @@ class Diagram:
                 parabola = vis.add_parabola(data=data, color="green")
                 self.visibleParabolas.append(parabola)
 
-    def clearArcs(self, vis: Visualizer):
-        for parabola in self.visibleParabolas:
-            vis.remove_figure(parabola)
-            self.visibleParabolas.remove(parabola)
-
     def drawSites(self, vis: Visualizer):
         vis.add_point([site.point.asTuple()
                       for site in self.sites], color="blue", s=2)
@@ -195,7 +191,7 @@ class Diagram:
                     (edge.origin.point.asTuple(), edge.destination.point.asTuple()))
             elif originInside and not destinationInside:
                 direction = destination - origin
-                intersection = box.getFirstIntersection(
+                intersection = box.getIntersection(
                     origin, direction)
                 seg = vis.add_line_segment(
                     (origin.asTuple(), intersection.point.asTuple()))
@@ -203,7 +199,7 @@ class Diagram:
                     (origin.asTuple(), intersection.point.asTuple()))
             elif not originInside and destinationInside:
                 direction = origin - destination
-                intersection = box.getFirstIntersection(
+                intersection = box.getIntersection(
                     destination, direction)
                 seg = vis.add_line_segment(
                     (destination.asTuple(), intersection.point.asTuple()))

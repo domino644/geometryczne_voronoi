@@ -116,7 +116,7 @@ class Fortune:
         rightArc.rightHalfEdge = arc.rightHalfEdge
 
         self.BL.replace(arc, middleArc)
-        self.BL.insertBepfore(middleArc, leftArc)
+        self.BL.insertBefore(middleArc, leftArc)
         self.BL.insertAfter(middleArc, rightArc)
 
         self.diagram.arcs.remove(arc)

@@ -20,14 +20,14 @@ class Diagram:
         self.vertices: list[Vertex] = []
         self.faces: list[Face] = []
         self.sites: list[Site] = []
-        for i, point in enumerate(points):
-            self.sites.append(Site(index=i, point=point, face=None))
+        for point in points:
+            self.sites.append(Site(point=point, face=None))
             self.faces.append(Face(site=self.sites[-1], outerComponent=None))
             self.sites[-1].face = self.faces[-1]
         self.arcs: list[Arc] = []
         self.visibleParabolas: list[Parabola] = []
         self.visibleHalfEdges: list[LineSegment] = []
-        self.visibleHalfEdgesCoord: list[tuple[tuple]] = []
+        self.visibletupHalfEdgesCoord: list[tuple[tuple[float, float]]] = []
         self.visibleSweepline: LineSegment = None
         self.circle: tuple[Vector2d, float] = None
         self.visibleCircle: Circle = None
@@ -130,7 +130,7 @@ class Diagram:
         if self.circle is not None:
             self.drawSites(vis)
             self.drawSweepline(sweepline, box, vis)
-            self.drawArcs(box, sweepline, vis, BL)
+            self.drawArcs(box, sweepline, vis, BL.guardian)
             self.drawCircle(self.circle[0], self.circle[1], vis, box)
             self.drawVertices(box, vis)
             self.drawHalfEdges(box, vis)
@@ -138,12 +138,12 @@ class Diagram:
             self.drawSweepline(sweepline=sweepline, box=box, vis=vis)
             self.drawVertices(box, vis)
             self.drawSites(vis)
-            self.drawArcs(box, sweepline, vis, BL)
+            self.drawArcs(box, sweepline, vis, BL.guardian)
             self.drawHalfEdges(box, vis)
         vis.add_title(message)
         vis.show(x_lim=(box.left, box.right), y_lim=(box.bottom, box.top))
 
-    def drawArcs(self, box: Box, sweepline: float, vis: Visualizer, BL: Beachline):
+    def drawArcs(self, box: Box, sweepline: float, vis: Visualizer, guardian: Arc):
         for parabola in self.visibleParabolas:
             vis.remove_figure(parabola)
             self.visibleParabolas.remove(parabola)
@@ -152,12 +152,12 @@ class Diagram:
             middle = arc
             right = arc.next
             x_left = box.left
-            if left is not BL.guardian:
+            if left is not guardian:
                 x_left = Beachline.computeBreakpoint(
                     left.site.point, middle.site.point, sweepline, left.side)
                 x_left = max(x_left, box.left)
             x_right = box.right
-            if right is not BL.guardian:
+            if right is not guardian:
                 x_right = Beachline.computeBreakpoint(
                     middle.site.point, right.site.point, sweepline, right.side)
                 x_right = min(x_right, box.right)

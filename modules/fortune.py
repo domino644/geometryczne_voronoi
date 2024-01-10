@@ -13,7 +13,6 @@ from modules.box import Box
 
 
 class Fortune:
-    eps = 10**-9
 
     def __init__(self, points: tuple[int, int]) -> None:
         self.BL = Beachline()
@@ -109,7 +108,7 @@ class Fortune:
         if rightArc.next is not self.BL.guardian:
             self.addEvent(leftArc, rightArc, rightArc.next)
 
-    def breakArc(self, arc: Arc, site):
+    def breakArc(self, arc: Arc, site: Site):
         middleArc = self.BL.createArc(site)
         leftArc = self.BL.createArc(arc.site, Arc.LEFT)
         leftArc.leftHalfEdge = arc.leftHalfEdge
@@ -117,7 +116,7 @@ class Fortune:
         rightArc.rightHalfEdge = arc.rightHalfEdge
 
         self.BL.replace(arc, middleArc)
-        self.BL.insertBefore(middleArc, leftArc)
+        self.BL.insertBepfore(middleArc, leftArc)
         self.BL.insertAfter(middleArc, rightArc)
 
         self.diagram.arcs.remove(arc)
